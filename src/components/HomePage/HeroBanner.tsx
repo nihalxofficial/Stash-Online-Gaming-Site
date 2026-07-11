@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback } from "react";
-import { Link } from "@heroui/react";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { HeroCardItem } from "@/types";
 import HeroBg from "@/assets/HeroBg.png";
 
 interface HeroBannerProps {
-  backgroundImageUrl?: string | any;
+  backgroundImageUrl?: string | unknown;
   tagline?: string;
   titleTop?: string;
   titleBottom?: string;

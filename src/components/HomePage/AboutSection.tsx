@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { Link } from "@heroui/react";
+import Link from "next/link";
 import { AboutSectionProps } from "@/types";
 import aboutBg from "@/assets/about-bg.png";
 import aboutCharacter from "@/assets/about-character.jpg";
