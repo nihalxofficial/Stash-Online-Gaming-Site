@@ -17,7 +17,7 @@ const featuresData: FeatureNode[] = [
   {
     id: "feat_1",
     title: "Survive At All Costs",
-    description: "You have 30 minutes to find a historic relic, signal for emergency extraction, and secure one of three highly contested deployment spots on the rogue chopper.",
+    description: "You have 30 minutes to find a historic relic, signal for emergency extraction and secure one of three highly contested deployment spots on the rogue chopper.",
     image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
     tag: "TACTICAL EXTRACTION",
   },
