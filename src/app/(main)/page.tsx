@@ -3,6 +3,7 @@ import CommunityCTA from "@/components/HomePage/CommunityCTA";
 import HeroBanner from "@/components/HomePage/HeroBanner";
 import LatestGames from "@/components/HomePage/LatestGames";
 import MatchCountdown from "@/components/HomePage/MatchCountdown";
+import Reviews from "@/components/HomePage/Reviews";
 import SpecialFeatures from "@/components/HomePage/SpecialFeatures";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <MatchCountdown/>
       <SpecialFeatures/>
       <CommunityCTA/>
+      <Reviews/>
     </>
   );
 }
