@@ -12,6 +12,7 @@
     "@better-auth/mongo-adapter": "^1.6.23",
     "@heroui/react": "^3.2.2",
     "@heroui/styles": "^3.2.2",
+    "@internationalized/date": "^3.12.2",
     "better-auth": "^1.6.23",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
