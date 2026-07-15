@@ -9,7 +9,7 @@ import {
   FiShield,
 } from "react-icons/fi";
 import { Button, Modal } from "@heroui/react";
-import { downloadGame } from "@/lib/api/games";
+import { getToken } from "@/lib/core/session";
 
 interface DownloadButtonContainerProps {
   gameId: string;
@@ -30,11 +30,9 @@ export default function DownloadButtonContainer({
   const isFree = price === 0;
   const isCard = variant === "card";
 
-  const triggerDownloadAction = () => {
-    window.open(
-      `${process.env.NEXT_PUBLIC_API_URL}/games/${gameId}/download`,
-      "_blank",
-    );
+  const triggerDownloadAction = async() => {
+    const token = await getToken();
+    window.open(`${process.env.NEXT_PUBLIC_API_URL}/games/${gameId}/download?token=${token}`, '_blank');
   };
 
   const simulatePaymentProcess = () => {
