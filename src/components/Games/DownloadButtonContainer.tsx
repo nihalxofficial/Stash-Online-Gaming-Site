@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { FiDownload, FiCreditCard, FiCheckCircle, FiX, FiShield } from 'react-icons/fi';
+import { FiDownload, FiCreditCard, FiCheckCircle, FiShield } from 'react-icons/fi';
+import { Button, Modal } from "@heroui/react";
 
 interface DownloadButtonContainerProps {
   gameId: string;
@@ -12,140 +13,153 @@ interface DownloadButtonContainerProps {
 }
 
 export default function DownloadButtonContainer({ gameId, price, gameTitle, variant = 'details' }: DownloadButtonContainerProps) {
-  const [activeModal, setActiveModal] = useState<'none' | 'checkout' | 'success'>('none');
+  const [step, setStep] = useState<'checkout' | 'success'>('checkout');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const isFree = price === 0;
+  const isCard = variant === 'card';
 
-  // Handles direct binary download operations
   const triggerDownloadAction = () => {
     window.open(`/api/games/${gameId}/download`, '_blank');
-  };
-
-  const handleInitialClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevents grid layout cards from triggering parent navigation links
-    e.stopPropagation();
-
-    if (isFree) {
-      triggerDownloadAction();
-    } else {
-      setActiveModal('checkout');
-    }
   };
 
   const simulatePaymentProcess = () => {
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
-      setActiveModal('success');
+      setStep('success');
     }, 1500);
   };
 
-  const isCard = variant === 'card';
-  
-  // DYNAMIC BLUE-PURPLE GRADIENT STYLING RULES
-  const buttonStyle = isCard
-    ? "h-9 px-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-lg shadow-indigo-600/20 text-[10px] font-bold uppercase tracking-wider"
-    : "h-12 px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 active:scale-95 transition-all rounded-xl flex items-center gap-2 font-black text-white shadow-lg shadow-indigo-600/30 text-xs uppercase tracking-widest";
+  const resetModalFlow = () => {
+    setStep('checkout');
+  };
+
+  // Button layout matching your card cuts perfectly
+  const triggerButtonStyle = isCard
+    ? "w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-[11px] font-black tracking-widest uppercase py-3 px-4 rounded transition-all duration-300 cursor-pointer shadow-lg shadow-indigo-600/10 active:scale-[0.98] [clip-path:polygon(12px_0,100%_0,100%_100%,0_100%,0_12px)]"
+    : "h-12 px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl flex items-center gap-2 font-black shadow-lg shadow-indigo-600/30 text-xs uppercase tracking-widest transition-all active:scale-95";
+
+  if (isFree) {
+    return (
+      <button 
+        onClick={triggerDownloadAction} 
+        className={triggerButtonStyle} 
+        type="button"
+      >
+        <FiDownload className="w-3 h-3 stroke-[3]" />
+        <span>Get Now: Free Fetch</span>
+      </button>
+    );
+  }
 
   return (
-    <>
-      {/* TRIGGER INTERACTION CONTROL INTERFACE NODE */}
-      <button onClick={handleInitialClick} className={buttonStyle} type="button">
-        <FiDownload className="w-3.5 h-3.5" />
-        {isCard ? (
-          <span>Get Now</span>
-        ) : (
-          <span>{isFree ? "Get Now: Free Fetch" : "Get Now: Buy Access"}</span>
-        )}
-      </button>
+    <Modal>
+      {/* 1. INTERACTION TRIGGER */}
+      <Button className={triggerButtonStyle} type="button">
+        <FiDownload className="w-3 h-3 stroke-[3]" />
+        <span>{isCard ? "Get Now" : "Get Now: Buy Access"}</span>
+      </Button>
 
-      {/* OVERLAY SYSTEM BLOCK: STACK ENGINE MODALS */}
-      {activeModal !== 'none' && (
-        <div 
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm font-mono"
-          onClick={() => activeModal !== 'checkout' && setActiveModal('none')}
-        >
-          {/* MODAL PHASE A: CHECKOUT DISPATCH HUB */}
-          {activeModal === 'checkout' && (
-            <div 
-              className="w-full max-w-md border border-white/10 bg-[#0d0f1a] p-6 rounded-2xl shadow-2xl space-y-6 relative animate-in fade-in zoom-in-95 duration-200"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button 
-                className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
-                onClick={() => setActiveModal('none')}
-              >
-                <FiX className="w-4 h-4" />
-              </button>
+      {/* 2. OVERLAY BACKDROP FRAME */}
+      <Modal.Backdrop className="fixed inset-0 bg-black/60 ">
+        {/* FIXED: items-start pushes down, flex justify-center ensures it stays exactly centered horizontally */}
+        <Modal.Container className="w-full h-full overflow-y-auto flex justify-center items-start pt-24 pb-12 px-4">
+          {/* FIXED: mx-auto locks it to horizontal grid center, mt-6 ensures a clean top offset from navbars */}
+          <Modal.Dialog className="w-full sm:max-w-[440px] mx-auto mt-6 bg-[#0d0f1a] border border-white/10 text-gray-200 font-mono rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden focus:outline-none">
+            
+            <Modal.CloseTrigger onClick={resetModalFlow} className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors cursor-pointer" />
+            
+            {/* STEP A: SECURE ACCESS TERMINAL */}
+            {step === 'checkout' && (
+              <div className="space-y-6 w-full">
+                <Modal.Header className="flex flex-col gap-2 items-start p-0">
+                  <div className="p-3 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl shadow-inner">
+                    <FiCreditCard className="size-6" />
+                  </div>
+                  <div className="space-y-1 mt-1">
+                    <span className="text-[10px] text-indigo-400 font-black uppercase tracking-widest block">
+                      Secure Access Terminal
+                    </span>
+                    <Modal.Heading className="text-lg font-black text-white uppercase tracking-wide text-left leading-snug truncate max-w-[320px]">
+                      {gameTitle}
+                    </Modal.Heading>
+                  </div>
+                </Modal.Header>
 
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase text-indigo-400 font-bold tracking-widest">Secure Terminal Transaction</p>
-                <h3 className="text-lg font-black text-white uppercase truncate">{gameTitle}</h3>
+                <Modal.Body className="p-0 space-y-4">
+                  <div className="p-4 bg-[#06070c] border border-white/5 rounded-xl flex items-center justify-between text-xs shadow-md">
+                    <span className="text-gray-500 tracking-wider">Access Token Weight:</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-black text-base">
+                      ${price.toFixed(2)}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 text-[11px] text-gray-400 leading-relaxed bg-white/[0.02] border border-white/[0.04] p-3.5 rounded-xl shadow-inner">
+                    <FiShield className="text-cyan-400 w-4 h-4 shrink-0 mt-0.5" />
+                    <span>Sandbox interface routing active. Authorization clearance protocols bypass production networks.</span>
+                  </div>
+                </Modal.Body>
+
+                <Modal.Footer className="p-0 pt-2">
+                  <Button 
+                    isLoading={isProcessing}
+                    onClick={simulatePaymentProcess}
+                    className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest rounded-xl py-6 shadow-lg shadow-indigo-600/20 active:scale-[0.99]"
+                  >
+                    Confirm Payment
+                  </Button>
+                </Modal.Footer>
               </div>
+            )}
 
-              <div className="p-4 bg-[#06070c] border border-white/5 rounded-xl flex items-center justify-between text-xs">
-                <span className="text-gray-500">Access Key Value:</span>
-                <span className="text-white font-black text-sm">${price.toFixed(2)}</span>
+            {/* STEP B: CLEARANCE SUCCESS HUB */}
+            {step === 'success' && (
+              <div className="space-y-6 text-center w-full">
+                <Modal.Header className="flex flex-col gap-3 items-center p-0">
+                  <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/5">
+                    <FiCheckCircle className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-emerald-400 font-black tracking-widest block uppercase">Transaction Confirmed</span>
+                    <Modal.Heading className="text-lg font-black text-white uppercase tracking-wide">
+                      Access Key Cleared
+                    </Modal.Heading>
+                  </div>
+                </Modal.Header>
+
+                <Modal.Body className="p-0">
+                  <p className="text-xs text-gray-400 leading-relaxed px-1">
+                    Verification matrix check successful. The direct system execution download link token is fully bound to your client profile context.
+                  </p>
+                </Modal.Body>
+
+                <Modal.Footer className="p-0 pt-2 flex gap-3">
+                  <Button 
+                    slot="close"
+                    onClick={resetModalFlow}
+                    className="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white text-xs font-bold uppercase rounded-xl py-6 transition-all"
+                  >
+                    Dismiss
+                  </Button>
+                  <Button 
+                    slot="close"
+                    onClick={() => {
+                      triggerDownloadAction();
+                      resetModalFlow();
+                    }}
+                    className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black uppercase tracking-wider rounded-xl py-6 flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
+                  >
+                    <FiDownload className="w-4 h-4 stroke-[2.5]" />
+                    <span>Run Fetch</span>
+                  </Button>
+                </Modal.Footer>
               </div>
+            )}
 
-              <div className="space-y-3">
-                <div className="flex items-start gap-2.5 text-[11px] text-gray-500 leading-normal">
-                  <FiShield className="text-cyan-400 w-4 h-4 shrink-0 mt-0.5" />
-                  <span>Sandbox Environment Enabled. Mock operations placeholder sequence will skip external ledger routing logic tracking matrices.</span>
-                </div>
-
-                <button
-                  disabled={isProcessing}
-                  onClick={simulatePaymentProcess}
-                  className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-indigo-950 disabled:to-indigo-900 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-600/10"
-                >
-                  <FiCreditCard className="w-4 h-4" />
-                  <span>{isProcessing ? "Authorizing Ledger Trace..." : "Confirm Mock Payment"}</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* MODAL PHASE B: SUCCESSION MATRIX DOWNLOAD HANDSHAKE */}
-          {activeModal === 'success' && (
-            <div 
-              className="w-full max-w-md border border-emerald-500/20 bg-[#080a0f] p-8 rounded-2xl shadow-2xl text-center space-y-6 relative animate-in fade-in zoom-in-95 duration-200"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-inner shadow-emerald-500/10">
-                <FiCheckCircle className="w-8 h-8" />
-              </div>
-
-              <div className="space-y-1.5">
-                <h3 className="text-base font-bold text-white uppercase tracking-wide">Validation Authorization Verified</h3>
-                <p className="text-xs text-gray-500 leading-relaxed">
-                  Mock transfer complete. Package clearance token linked to core client context profile segment.
-                </p>
-              </div>
-
-              <div className="pt-2 border-t border-white/5 flex gap-2.5">
-                <button
-                  onClick={() => setActiveModal('none')}
-                  className="flex-1 h-11 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/5 text-xs font-bold uppercase rounded-xl transition-all"
-                >
-                  Dismiss
-                </button>
-                <button
-                  onClick={() => {
-                    triggerDownloadAction();
-                    setActiveModal('none');
-                  }}
-                  className="flex-1 h-11 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold uppercase rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-600/20"
-                >
-                  <FiDownload className="w-4 h-4" />
-                  <span>Run Fetch</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
+    </Modal>
   );
 }
