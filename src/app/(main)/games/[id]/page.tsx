@@ -8,6 +8,7 @@ import {
   FiCalendar,
   FiHardDrive,
   FiAlertTriangle,
+  FiDownload,
 } from "react-icons/fi";
 import { GameData } from "@/types";
 import GameGalleryContainer from "@/components/Games/GameGalleryContainer";
@@ -18,12 +19,15 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+// Extend GameData if necessary to include downloadCount
+type ExtendedGameData = GameData & { downloadCount?: number };
+
 export default async function GameDetailsPage({ params }: PageProps) {
   const { id } = await params;
 
-  let game: GameData | null = null;
+  let game: ExtendedGameData | null = null;
   try {
-    game = await getGameById(id);
+    game = (await getGameById(id)) as ExtendedGameData;
   } catch (error) {
     console.error("Failed to retrieve game database trace:", error);
   }
@@ -88,6 +92,8 @@ export default async function GameDetailsPage({ params }: PageProps) {
     const sizeVal = min + (Math.abs(hash) % (max - min + 1));
     return `${sizeVal} GB`;
   })();
+
+  const downloadCount = game?.downloadCount ?? 0;
 
   return (
     <div className="min-h-screen bg-[#08090f] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/10 via-[#08090f] to-[#08090f] text-gray-200 p-4 md:p-8 font-mono">
@@ -186,6 +192,16 @@ export default async function GameDetailsPage({ params }: PageProps) {
                   title={game?.originalName}
                 >
                   {game?.originalName || "manifest.bin"}
+                </p>
+              </div>
+
+              {/* DOWNLOAD COUNT METRIC CARD */}
+              <div className="p-3 bg-[#06070c]/50 border border-white/5 rounded-lg space-y-1 col-span-2">
+                <div className="flex items-center gap-1.5 text-gray-500 text-[10px] uppercase tracking-wider">
+                  <FiDownload className="text-emerald-400" /> Transfer Deployments
+                </div>
+                <p className="text-white font-bold">
+                  {downloadCount.toLocaleString()} downloads
                 </p>
               </div>
             </div>
