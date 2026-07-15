@@ -31,23 +31,23 @@ const userNavigationNodes: SidebarLinkNode[] = [
     accentClass: "group-hover:text-blue-400",
   },
   {
-    label: "Game Library",
-    href: "/dashboard/user/library",
+    label: "Downloads",
+    href: "/dashboard/user/downloads",
     icon: FiGrid,
     accentClass: "group-hover:text-indigo-400",
   },
-  {
-    label: "Live Streams",
-    href: "/dashboard/user/streams",
-    icon: FiTv,
-    accentClass: "group-hover:text-purple-400",
-  },
-  {
-    label: "Match Logs",
-    href: "/dashboard/user/history",
-    icon: FiActivity,
-    accentClass: "group-hover:text-emerald-400",
-  },
+  // {
+  //   label: "Live Streams",
+  //   href: "/dashboard/user/streams",
+  //   icon: FiTv,
+  //   accentClass: "group-hover:text-purple-400",
+  // },
+  // {
+  //   label: "Match Logs",
+  //   href: "/dashboard/user/history",
+  //   icon: FiActivity,
+  //   accentClass: "group-hover:text-emerald-400",
+  // },
   {
     label: "Profile",
     href: "/dashboard/profile",

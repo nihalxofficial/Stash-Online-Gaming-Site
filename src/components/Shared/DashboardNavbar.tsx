@@ -25,7 +25,7 @@ interface NavigationOption {
 const getProfileMenuOptions = (role: string = "user"): NavigationOption[] => [
   {
     label: "My Operator Profile",
-    href: "/dashboard/profile",
+    href: "/profile",
     icon: FiUser,
     accentClass: "group-hover:text-blue-400",
   },
