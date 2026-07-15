@@ -1,10 +1,19 @@
 // src/app/(main)/games/[id]/page.tsx
-import { getGameById } from '@/lib/api/games';
-import React from 'react';
-import Link from 'next/link';
-import { FiDownload, FiStar, FiLayers, FiCpu, FiUser, FiCalendar, FiHardDrive, FiAlertTriangle } from 'react-icons/fi';
-import { GameData } from '@/types'; // Adjust this path import to point to your interface file location
-import GameGalleryContainer from '@/components/Games/GameGalleryContainer';
+import { getGameById } from "@/lib/api/games";
+import Link from "next/link";
+import {
+  FiStar,
+  FiLayers,
+  FiCpu,
+  FiUser,
+  FiCalendar,
+  FiHardDrive,
+  FiAlertTriangle,
+} from "react-icons/fi";
+import { GameData } from "@/types";
+import GameGalleryContainer from "@/components/Games/GameGalleryContainer";
+import DownloadButtonContainer from "@/components/Games/DownloadButtonContainer";
+import Image from "next/image";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -12,7 +21,7 @@ interface PageProps {
 
 export default async function GameDetailsPage({ params }: PageProps) {
   const { id } = await params;
-  
+
   let game: GameData | null = null;
   try {
     game = await getGameById(id);
@@ -33,12 +42,14 @@ export default async function GameDetailsPage({ params }: PageProps) {
               Deployment Matrix Missing
             </h2>
             <p className="text-xs text-gray-500 leading-relaxed">
-              The game parameter trace hash key <span className="text-cyan-400 font-bold break-all">#{id}</span> could not be discovered or verified in the server cache.
+              The game parameter trace hash key{" "}
+              <span className="text-cyan-400 font-bold break-all">#{id}</span>{" "}
+              could not be discovered or verified in the server cache.
             </p>
           </div>
           <div className="pt-2">
-            <Link 
-              href="/games" 
+            <Link
+              href="/games"
               className="inline-block px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-xs font-bold text-white transition-colors uppercase tracking-wider"
             >
               Return to Core Registry
@@ -51,56 +62,75 @@ export default async function GameDetailsPage({ params }: PageProps) {
 
   const ownerName: string = game?.owner?.name || "System Core Operator";
   const ownerEmail: string = game?.owner?.email || "internal@system.node";
-  
+
+  const targetId =
+    game?.id ||
+    (typeof game?._id === "string" ? game._id : game?._id?.$oid) ||
+    id;
+
   const mediaGallery: string[] = [
     ...(game?.thumbnail ? [game.thumbnail] : []),
-    ...(game?.images || [])
+    ...(game?.images || []),
   ];
 
   return (
     <div className="min-h-screen bg-[#08090f] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/10 via-[#08090f] to-[#08090f] text-gray-200 p-4 md:p-8 font-mono">
       <div className="max-w-6xl mx-auto space-y-8">
-        
         {/* BREADCRUMB NAVIGATION */}
         <div className="text-xs text-gray-500 uppercase tracking-wider">
-          <Link href="/games" className="hover:text-cyan-400 transition-colors">Registry Index</Link>
+          <Link href="/games" className="hover:text-cyan-400 transition-colors">
+            Registry Index
+          </Link>
           <span className="mx-2 text-gray-700">/</span>
           <span className="text-white font-bold">{game?.title}</span>
         </div>
 
         {/* MAIN INTERACTIVE DISPLAY GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
           {/* LEFT COLUMN: PRIMARY VISUAL MATRIX SLIDER */}
           <div className="lg:col-span-7">
-            <GameGalleryContainer mediaItems={mediaGallery} gameTitle={game?.title} gameStatus={game?.status} />
+            <GameGalleryContainer
+              mediaItems={mediaGallery}
+              gameTitle={game?.title}
+              gameStatus={game?.status}
+            />
           </div>
 
           {/* RIGHT COLUMN: DISPATCH CONTROLS & CAPACITY METRICS */}
           <div className="lg:col-span-5 space-y-6 bg-[#0d0f1a]/60 border border-white/5 p-6 rounded-2xl backdrop-blur-md shadow-xl">
             <div className="space-y-2">
-              <h1 className="text-3xl font-black text-white uppercase tracking-tight">{game?.title}</h1>
-              <p className="text-xs text-gray-500 font-mono tracking-tighter">SLUG: {game?.slug}</p>
+              <h1 className="text-3xl font-black text-white uppercase tracking-tight">
+                {game?.title}
+              </h1>
+              <p className="text-xs text-gray-500 font-mono tracking-tighter">
+                SLUG: {game?.slug}
+              </p>
             </div>
 
             {/* PRICING & DOWNLOAD DIRECT CONNECTIONS */}
-            <div className="p-4 bg-[#06070c] border border-white/5 rounded-xl flex items-center justify-between">
+            <div className="p-4 bg-[#06070c] border border-white/5 rounded-xl flex items-center justify-between gap-4">
               <div>
-                <p className="text-[10px] uppercase text-gray-600 tracking-widest">ACCESS COST</p>
+                <p className="text-[10px] uppercase text-gray-600 tracking-widest">
+                  ACCESS COST
+                </p>
                 <p className="text-2xl font-black text-white uppercase">
-                  {game?.price === 0 ? <span className="text-cyan-400">FREE-TO-PLAY</span> : `$${game?.price}`}
+                  {game?.price === 0 ? (
+                    <span className="text-emerald-400">FREE</span>
+                  ) : (
+                    `$${game?.price?.toFixed(2)}`
+                  )}
                 </p>
               </div>
-              
-              <a 
-                href={game?.filePath || "#"} 
-                target="_blank"
-                rel="noreferrer"
-                className="h-12 px-5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition-all rounded-lg flex items-center gap-2 font-bold text-white shadow-lg shadow-indigo-600/20 text-xs uppercase"
-              >
-                <FiDownload className="w-4 h-4" />
-                <span>Fetch Binary</span>
-              </a>
+
+              {/* FIXED: DYNAMIC DOWNLOAD COMPONENT INSTALLED */}
+              <div className="flex-1 max-w-[200px]">
+                <DownloadButtonContainer
+                  gameId={targetId}
+                  price={game?.price ?? 0}
+                  gameTitle={game?.title || "Asset"}
+                  variant="detail"
+                />
+              </div>
             </div>
 
             {/* METRICS & RUNTIME SPEC DATA-GRID */}
@@ -109,28 +139,37 @@ export default async function GameDetailsPage({ params }: PageProps) {
                 <div className="flex items-center gap-1.5 text-gray-500 text-[10px] uppercase tracking-wider">
                   <FiStar className="text-amber-400" /> System Rating
                 </div>
-                <p className="text-white font-bold">{game?.rating || "0.0"} / 5.0</p>
+                <p className="text-white font-bold">
+                  {game?.rating ? game.rating.toFixed(1) : "0.0"} / 5.0
+                </p>
               </div>
 
               <div className="p-3 bg-[#06070c]/50 border border-white/5 rounded-lg space-y-1">
                 <div className="flex items-center gap-1.5 text-gray-500 text-[10px] uppercase tracking-wider">
                   <FiHardDrive className="text-cyan-400" /> Package Size
                 </div>
-                <p className="text-white font-bold">{game?.size || "Unknown Space"}</p>
+                <p className="text-white font-bold">
+                  {game?.size || "Unknown Space"}
+                </p>
               </div>
 
               <div className="p-3 bg-[#06070c]/50 border border-white/5 rounded-lg space-y-1">
                 <div className="flex items-center gap-1.5 text-gray-500 text-[10px] uppercase tracking-wider">
                   <FiCalendar className="text-indigo-400" /> Launch Vector
                 </div>
-                <p className="text-white font-bold">{game?.releaseDate || "Pending Log"}</p>
+                <p className="text-white font-bold">
+                  {game?.releaseDate || "Pending Log"}
+                </p>
               </div>
 
               <div className="p-3 bg-[#06070c]/50 border border-white/5 rounded-lg space-y-1">
                 <div className="flex items-center gap-1.5 text-gray-500 text-[10px] uppercase tracking-wider">
                   <FiCpu className="text-purple-400" /> File Source
                 </div>
-                <p className="text-white font-bold truncate max-w-[150px]" title={game?.originalName}>
+                <p
+                  className="text-white font-bold truncate max-w-[150px]"
+                  title={game?.originalName}
+                >
                   {game?.originalName || "manifest.bin"}
                 </p>
               </div>
@@ -142,16 +181,32 @@ export default async function GameDetailsPage({ params }: PageProps) {
                 <FiUser className="text-cyan-400" /> Operations Owner Manifest
               </div>
               <div className="flex items-center gap-3 bg-[#06070c] p-3 border border-white/5 rounded-xl">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center font-bold text-indigo-400 uppercase text-sm shrink-0">
-                  {ownerName.substring(0, 2)}
+                {/* OWNER AVATAR IMAGE CONTAINER */}
+                <div className="relative w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center overflow-hidden shrink-0">
+                  {game?.owner?.image ? (
+                    <Image
+                      src={game?.owner?.image}
+                      alt={ownerName}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="font-bold text-indigo-400 uppercase text-sm">
+                      {ownerName.substring(0, 2)}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-0.5 min-w-0">
-                  <p className="text-xs font-bold text-white truncate">{ownerName}</p>
-                  <p className="text-[10px] text-gray-600 font-mono truncate">{ownerEmail}</p>
+                  <p className="text-xs font-bold text-white truncate">
+                    {ownerName}
+                  </p>
+                  <p className="text-[10px] text-gray-600 font-mono truncate">
+                    {ownerEmail}
+                  </p>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -174,7 +229,10 @@ export default async function GameDetailsPage({ params }: PageProps) {
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {game?.genre?.map((tag: string) => (
-                  <span key={`genre-${tag}`} className="px-2 py-0.5 bg-indigo-500/5 border border-indigo-500/20 rounded text-[10px] font-bold text-indigo-400">
+                  <span
+                    key={`genre-${tag}`}
+                    className="px-2 py-0.5 bg-indigo-500/5 border border-indigo-500/20 rounded text-[10px] font-bold text-indigo-400"
+                  >
                     {tag}
                   </span>
                 ))}
@@ -188,7 +246,10 @@ export default async function GameDetailsPage({ params }: PageProps) {
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {game?.platform?.map((plat: string) => (
-                  <span key={`platform-${plat}`} className="px-2 py-0.5 bg-cyan-500/5 border border-cyan-500/20 rounded text-[10px] font-bold text-cyan-400">
+                  <span
+                    key={`platform-${plat}`}
+                    className="px-2 py-0.5 bg-cyan-500/5 border border-cyan-500/20 rounded text-[10px] font-bold text-cyan-400"
+                  >
                     {plat}
                   </span>
                 ))}
@@ -196,7 +257,6 @@ export default async function GameDetailsPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
