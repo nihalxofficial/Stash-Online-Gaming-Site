@@ -22,7 +22,6 @@ interface NavigationOption {
   accentClass: string;
 }
 
-// Turned into a dynamic array map generation function to handle conditional user roles safely
 const getProfileMenuOptions = (role: string = "user"): NavigationOption[] => [
   {
     label: "My Operator Profile",
@@ -62,7 +61,6 @@ export default function DashboardNavbar({ user }: UserProps) {
       router.push("/");
       toast.success("Killed current session authorization.");
     } catch (error) {
-      // console.error("Signout sequence failure:", error);
       toast.error("Failed to safely terminate session.");
     }
   };
@@ -71,39 +69,34 @@ export default function DashboardNavbar({ user }: UserProps) {
     <header className="w-full h-16 bg-[#0d0f1a]/90 backdrop-blur-md border-b border-white/5 fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 font-mono select-none">
       <div className="w-full h-full flex items-center justify-between">
         
-        {/* LEFT PROFILE: BRAND LOGO */}
-        <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
-              <span className="text-white font-black text-sm tracking-tighter">NX</span>
-            </div>
-            <span className="hidden sm:block text-sm font-black text-white uppercase tracking-widest bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
-              Nexus_Arena
+        {/* LEFT PROFILE: BRAND LOGO & TYPOGRAPHY */}
+        <div className="flex items-center gap-8 shrink-0">
+          <Link href="/dashboard" className="flex items-center group no-underline">
+            <span className="text-lg font-black text-white font-mono tracking-widest transition-transform duration-300 inline-block group-hover:-translate-y-[1px]">
+              ST
+            </span>
+            <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 font-mono tracking-widest transition-all duration-300 inline-block group-hover:scale-105 filter group-hover:drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]">
+              ASH
             </span>
           </Link>
         </div>
 
-        {/* MIDDLE PROFILE: THE SEARCH CONTROLLER */}
-        <div className="hidden md:flex items-center max-w-sm w-full relative mx-4">
-          <div className="absolute left-3 text-gray-500 pointer-events-none">
-            <FiSearch className="w-4 h-4" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search matching rooms, logs, tokens..."
-            className="w-full h-9 bg-[#05060c] border border-white/5 text-xs text-gray-300 placeholder-gray-600 pl-10 pr-4 focus:outline-none focus:border-blue-500/40 rounded transition-colors [clip-path:polygon(0_0,calc(100%-6px)_0,100%_6px,100%_100%,0_100%)]"
-          />
-        </div>
-
-        {/* RIGHT PROFILE: USER UTILITIES MATRIX */}
-        <div className="flex items-center gap-3">
+        {/* RIGHT PROFILE: USER UTILITIES MATRIX WITH SEARCH FIELD RIGHT NEXT TO NOTIFICATIONS */}
+        <div className="flex items-center gap-3 ml-auto">
           
-          {/* Mobile Search Trigger Icon */}
-          <button type="button" className="md:hidden p-2 text-gray-400 hover:text-white transition-colors">
-            <FiSearch className="w-4 h-4" />
-          </button>
+          {/* SEARCH FIELD INTEGRATION */}
+          <div className="relative w-40 sm:w-64 flex items-center shrink-0">
+            <div className="absolute left-3 text-gray-500 pointer-events-none z-10 flex items-center justify-center">
+              <FiSearch className="w-4 h-4 text-gray-500" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full h-9 bg-[#05060c] border border-white/5 text-xs text-gray-300 placeholder-gray-600 pl-9 pr-3 focus:outline-none focus:border-blue-500/40 rounded transition-colors [clip-path:polygon(0_0,calc(100%-6px)_0,100%_6px,100%_100%,0_100%)]"
+            />
+          </div>
 
-          {/* 1. NOTIFICATIONS WRAPPER */}
+          {/* NOTIFICATIONS WRAPPER */}
           <div className="relative">
             <button
               type="button"
@@ -141,7 +134,7 @@ export default function DashboardNavbar({ user }: UserProps) {
           {/* Separation Spacer Divider */}
           <div className="w-[1px] h-6 bg-white/5 mx-1" />
 
-          {/* 2. USER PROFILE DROPDOWN CONTAINER */}
+          {/* USER PROFILE DROPDOWN CONTAINER */}
           <div className="relative">
             <button
               type="button"

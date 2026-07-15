@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import GameCard from "../Shared/GameCard";
 import { GameData } from "@/types";
 
@@ -9,8 +10,8 @@ interface LatestGamesProps {
 
 export default function LatestGames({ initialGames }: LatestGamesProps) {
   
-  // Safe array guarding and capping the output array to exactly 6 records
-  const gamesToShow = initialGames ? initialGames.slice(0, 6) : [];
+  // Array type confirmation check running before execution slicing
+  const gamesToShow = Array.isArray(initialGames) ? initialGames.slice(0, 6) : [];
 
   return (
     <section className="w-full bg-[#05060c] py-16 sm:py-24 relative">
@@ -36,14 +37,19 @@ export default function LatestGames({ initialGames }: LatestGamesProps) {
           </div>
         </div>
 
-        {/* Reusable Grid Array - Renders a maximum of 6 elements */}
+        {/* Reusable Grid Array - Limited up to 6 data metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-8">
           {gamesToShow.map((game) => {
-            // Resolves unique key mapping handles string IDs or nested Mongo DB $oids
             const gameKey = game.id || (typeof game._id === "string" ? game._id : game._id?.$oid) || Math.random().toString();
             return <GameCard key={gameKey} game={game} />;
           })}
         </div>
+        
+        {gamesToShow.length === 0 && (
+          <div className="text-center text-xs text-gray-600 font-mono py-12 border border-dashed border-white/5 rounded-xl">
+            NO ACTIVE RUNTIME NODES TRACED IN SYSTEM REGISTRY
+          </div>
+        )}
       </div>
     </section>
   );
