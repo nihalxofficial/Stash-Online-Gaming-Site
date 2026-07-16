@@ -14,12 +14,12 @@ import {
 } from "react-icons/fa";
 
 const defaultGallery = [
-  { id: 1, src: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=150&auto=format&fit=crop" },
-  { id: 2, src: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=150&auto=format&fit=crop" },
-  { id: 3, src: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=150&auto=format&fit=crop" },
-  { id: 4, src: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=150&auto=format&fit=crop" },
-  { id: 5, src: "https://images.unsplash.com/photo-1612287230202-1bf1d85d1bdf?q=80&w=150&auto=format&fit=crop" },
-  { id: 6, src: "https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=150&auto=format&fit=crop" },
+  { id: 1, src: "https://i.ibb.co.com/Xf0DrfZb/828df9af-9ca2-486b-9cd0-6eab383f5b1a.png" },
+  { id: 2, src: "https://i.ibb.co.com/DPS3QCpJ/Chat-GPT-Image-Jul-16-2026-02-43-27-PM.png" },
+  { id: 3, src: "https://i.ibb.co.com/S4thYQ3r/Chat-GPT-Image-Jul-16-2026-02-33-05-PM.png" },
+  { id: 4, src: "https://i.ibb.co.com/WpG6Chn8/Chat-GPT-Image-Jul-16-2026-02-47-00-PM.png" },
+  { id: 5, src: "https://i.ibb.co.com/LdG7SK5Y/Chat-GPT-Image-Jul-16-2026-02-39-26-PM.png" },
+  { id: 6, src: "https://i.ibb.co.com/prvHgHTY/Chat-GPT-Image-Jul-16-2026-02-35-49-PM.png" },
 ];
 
 export default function Footer() {

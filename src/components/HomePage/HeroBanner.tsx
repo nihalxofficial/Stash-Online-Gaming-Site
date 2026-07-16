@@ -22,42 +22,42 @@ const defaultCards: HeroCardItem[] = [
     id: "fleet-game",
     title: "FLEET GAME",
     description: "It has also influenced game design reaching a broader demographic.",
-    imageUrl: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/DPS3QCpJ/Chat-GPT-Image-Jul-16-2026-02-43-27-PM.png",
     href: "/games/fleet-game"
   },
   {
     id: "air-fight",
     title: "AIR FIGHT",
     description: "Successful esports teams exhibit strong communication, strategic.",
-    imageUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/WpG6Chn8/Chat-GPT-Image-Jul-16-2026-02-47-00-PM.png",
     href: "/games/air-fight"
   },
   {
     id: "capture-base",
     title: "CAPTURE THE BASE",
     description: "The rise of mobile gaming has significantly expanded the gaming.",
-    imageUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/MxcYw8C6/Chat-GPT-Image-Jul-16-2026-02-33-05-PM.png",
     href: "/games/capture-base"
   },
   {
     id: "shadow-hunter",
     title: "SHADOW HUNTER",
     description: "Immersive tactical missions requiring extreme focus and rapid reflexes.",
-    imageUrl: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/HpDc0cy5/Chat-GPT-Image-Jul-16-2026-02-35-49-PM.png",
     href: "/games/shadow-hunter"
   },
   {
     id: "nexus-breach",
     title: "NEXUS BREACH",
     description: "Coordinate with your faction to penetrate heavily guarded cyber barriers.",
-    imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/4RQrWkdK/Chat-GPT-Image-Jul-16-2026-02-39-26-PM.png",
     href: "/games/nexus-breach"
   },
   {
     id: "alpha-squad",
     title: "ALPHA SQUAD",
     description: "Compete against global elite operators in high-stakes warfront environments.",
-    imageUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://i.ibb.co.com/Xf0DrfZb/828df9af-9ca2-486b-9cd0-6eab383f5b1a.png",
     href: "/games/alpha-squad"
   }
 ];

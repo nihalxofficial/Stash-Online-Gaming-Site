@@ -34,7 +34,7 @@ export default async function AdminGamesPage() {
         </div>
         
         <Link
-          href="/dashboard/admin/add-game" 
+          href="/dashboard/admin/add-games" 
           className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 rounded text-xs font-bold uppercase tracking-wider transition-colors [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)]"
         >
           <FiPlus className="w-3.5 h-3.5" />
@@ -99,7 +99,7 @@ export default async function AdminGamesPage() {
                         <div className="flex items-center justify-end gap-2">
                           <Link href={`/games/${gameId}`} className="p-1.5 bg-white/5 border border-white/5 rounded"><FiEye className="w-3.5 h-3.5" /></Link>
                           <Link href={`/dashboard/admin/my-games/edit/${gameId}`} className="p-1.5 bg-white/5 border border-white/5 rounded"><FiSliders className="w-3.5 h-3.5" /></Link>
-                          <button className="p-1.5 bg-red-500/5 border border-red-500/10 text-red-400 rounded"><FiTrash2 className="w-3.5 h-3.5" /></button>
+                          <button className="p-1.5 bg-red-500/5 cursor-pointer border border-red-500/10 text-red-400 rounded"><FiTrash2 className="w-3.5 h-3.5" /></button>
                         </div>
                       </td>
                     </tr>
