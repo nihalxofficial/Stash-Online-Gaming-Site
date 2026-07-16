@@ -68,7 +68,7 @@ export default function HeroBanner({
   titleTop = "ONLINE FANTASY",
   titleBottom = "VIDEO GAME",
   ctaText = "EXPLORE MORE",
-  ctaHref = "/explore",
+  ctaHref = "/games",
   cards = defaultCards
 }: HeroBannerProps) {
   

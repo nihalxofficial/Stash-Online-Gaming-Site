@@ -26,6 +26,7 @@ const navLinks: NavLinkItem[] = [
   { label: "Games", href: "/games" },
   { label: "About Us", href: "/about-us" },
   // { label: "Tournament", href: "/tournament" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 

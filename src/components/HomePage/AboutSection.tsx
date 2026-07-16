@@ -13,7 +13,7 @@ export default function AboutSection({
   leftFeaturedImage = aboutCharacter, 
   backgroundImageUrl = aboutBg, 
   ctaText = "EXPLORE MORE",
-  ctaHref = "/explore",
+  ctaHref = "/games",
   stats = [
     { value: "1.6K+", label: "Our Daily Game Users" },
     { value: "50M", label: "Game Downloads" },
