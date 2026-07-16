@@ -1,7 +1,6 @@
 // src/app/dashboard/user/settings/page.tsx
 "use client";
 
-import React from "react";
 import { FiUser, FiSliders, FiShield, FiSave, FiRefreshCw, FiTv } from "react-icons/fi";
 
 export default function SettingsPage() {
@@ -16,7 +15,7 @@ export default function SettingsPage() {
             <span>Terminal Settings</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1 max-w-xl leading-relaxed">
-            Configure local nodes, account details, stream outputs, and node authentication rules.
+            Configure local nodes, account details, stream outputs and node authentication rules.
           </p>
         </div>
 

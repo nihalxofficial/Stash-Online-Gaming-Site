@@ -5,7 +5,6 @@ import { FiActivity } from "react-icons/fi";
 import GamesClientWrapper from "./GamesClientWrapper";
 import { GameData } from "@/types";
 
-// Inline structure definition mirroring the API response metadata and game arrays
 interface GameResponseItem {
   _id: string | { $oid: string };
   title: string;
@@ -47,23 +46,22 @@ interface PageProps {
 export default async function GamesPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   
-  // PROPER FIX: Force cast the function execution promise directly to `any` first.
-  // This explicitly breaks the inferred connection to the `{}` structure returned by getGames.
   const rawData = await (getGames(resolvedParams) as Promise<any>);
   const data = rawData as ApiResponseStructure;
   
   const rawGames = data?.games || [];
   const meta = data?.meta || { totalItems: 0, totalPages: 1, page: 1, limit: 8 };
+  
+  // Available deployment matching pools passed straight down to controls
   const allGenres = ["Fps", "Tactical", "Hero Shooter", "Action", "RPG", "Open World"];
+  const allPlatforms = ["PC", "Xbox", "PS5"];
 
-  // Formats the raw games payload to match the expected GameData template perfectly
   const games: GameData[] = rawGames.map((game) => {
     const targetOid =
       typeof game?._id === "object" && game?._id && "$oid" in game._id
         ? game._id.$oid
         : String(game?._id || "");
 
-    // Construct the formatted object, casting through unknown to eliminate type friction
     return {
       ...game,
       _id: { $oid: targetOid },
@@ -90,7 +88,12 @@ export default async function GamesPage({ searchParams }: PageProps) {
         </div>
 
         {/* Client Wrapper */}
-        <GamesClientWrapper games={games} allGenres={allGenres} paginationMeta={meta} />
+        <GamesClientWrapper 
+          games={games} 
+          allGenres={allGenres} 
+          allPlatforms={allPlatforms} 
+          paginationMeta={meta} 
+        />
 
       </div>
     </div>
