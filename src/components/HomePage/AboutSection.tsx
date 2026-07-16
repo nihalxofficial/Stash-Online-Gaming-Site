@@ -1,3 +1,4 @@
+// src/components/HomePage/AboutSection.tsx
 "use client";
 
 import Link from "next/link";
@@ -21,13 +22,15 @@ export default function AboutSection({
   ],
 }: AboutSectionProps) {
 
-  // Unpack static import objects safely
-  const resolvedFeatureImg = leftFeaturedImage && typeof leftFeaturedImage === "object"
-    ? leftFeaturedImage.src
+  // FIXED: Cast static import objects through 'any' to cleanly extract Next.js asset paths (.src) without compilation failure
+  const rawFeatureImg = leftFeaturedImage as any;
+  const resolvedFeatureImg = rawFeatureImg && typeof rawFeatureImg === "object"
+    ? rawFeatureImg.src
     : leftFeaturedImage;
 
-  const resolvedBgSrc = backgroundImageUrl && typeof backgroundImageUrl === "object"
-    ? backgroundImageUrl.src
+  const rawBgSrc = backgroundImageUrl as any;
+  const resolvedBgSrc = rawBgSrc && typeof rawBgSrc === "object"
+    ? rawBgSrc.src
     : backgroundImageUrl;
 
   return (

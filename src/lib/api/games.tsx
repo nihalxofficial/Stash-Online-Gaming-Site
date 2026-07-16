@@ -1,7 +1,10 @@
 // src/lib/api/games.ts
 import { serverFetch } from "../core/server";
 
-export const getGames = async (searchParams?: Record<string, string | string[] | undefined>) => {
+// FIXED: Explicitly added ': Promise<any>' signature so TypeScript stops inferring '{}' from serverFetch
+export const getGames = async (
+  searchParams?: Record<string, string | string[] | undefined>
+): Promise<any> => {
   const query = new URLSearchParams();
 
   if (searchParams) {
@@ -17,9 +20,12 @@ export const getGames = async (searchParams?: Record<string, string | string[] |
   return serverFetch(`/games?${query.toString()}`);
 };
 
-export const getGameById = async (id: string) => {
+// FIXED: Explicitly added ': Promise<any>' signature
+export const getGameById = async (id: string): Promise<any> => {
   return serverFetch(`/games/${id}`);
 };
-export const getGamesByOwner = async (id: string) => {
+
+// FIXED: Explicitly added ': Promise<any>' signature
+export const getGamesByOwner = async (id: string): Promise<any> => {
   return serverFetch(`/games?owner=${id}`);
 };

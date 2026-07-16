@@ -37,6 +37,20 @@ export default async function ProfilePage() {
     );
   }
 
+  // PROPER FIX: Safe parsing of Date primitives using instance checking and runtime normalization
+  let parsedDate: string | null = null;
+  if (user.createdAt) {
+    if (user.createdAt instanceof Date) {
+      parsedDate = user.createdAt.toISOString();
+    } else if (typeof user.createdAt === "string") {
+      parsedDate = user.createdAt;
+    } else {
+      // Fallback fallback handling for Mongo $date structures if it escapes through an 'any' wrapper
+      const rawDate: any = user.createdAt;
+      parsedDate = rawDate?.$date || String(rawDate) || null;
+    }
+  }
+
   // Safe parsing of MongoDB data fields to pass down as clean primitives
   const serializableUser = {
     id: user.id || "ID_UNKNOWN",
@@ -47,7 +61,7 @@ export default async function ProfilePage() {
     role: user.role || "user",
     plan: user.plan || "free",
     status: user.status || "offline",
-    createdAt: typeof user.createdAt === "string" ? user.createdAt : user.createdAt?.$date || user.createdAt || null,
+    createdAt: parsedDate,
   };
 
   return <ProfileView initialUser={serializableUser} />;

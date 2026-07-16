@@ -21,24 +21,19 @@ export default function LoginClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Trigger entrance animations immediately after page loads or refreshes
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // 1. Immediately block interactions and set loading indicator state
     setIsLoading(true);
 
     try {
-      // Extracting all values cleanly via Object mapping methods
       const formData = new FormData(e.currentTarget);
       const userData = Object.fromEntries(formData.entries());
       const { email, password } = userData as Record<string, string>;
 
-      // Artificial aesthetic buffer delay (Match your 1.5s matrix pace)
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const { data, error } = await authClient.signIn.email({
@@ -47,19 +42,18 @@ export default function LoginClient() {
         rememberMe: true,
       });
 
-      // 2. Intercept structured Better Auth API failures
       if (error) {
-        toast.error(error.message || "Authentication handshake terminal failure.");
+        toast.error(
+          error.message || "Authentication handshake terminal failure.",
+        );
         return;
       }
 
-      // 3. Operational success routing protocol
       if (data) {
         toast.success("Session Initialized. Access Granted.");
         router.push("/");
       }
     } catch (err: unknown) {
-      // 4. Fallback guard for hard network runtime crashes
       if (err instanceof Error) {
         toast.error(err.message);
       } else {
@@ -79,14 +73,11 @@ export default function LoginClient() {
 
   return (
     <main className="relative min-h-screen w-full flex items-center justify-center p-4 select-none overflow-hidden bg-[#05060c]">
-      {/* Background Matrix Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
-      {/* Ambient Moving Glow Effects */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full animate-pulse pointer-events-none duration-[8000ms]" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full animate-pulse pointer-events-none duration-[6000ms]" />
 
-      {/* Outer Border Layer for the Unified Container */}
       <div
         className={`w-full max-w-5xl p-[1.5px] bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-lg shadow-[0_0_50px_rgba(99,102,241,0.15)] group/container transition-all duration-[1000ms] cubic-bezier(0.16,1,0.3,1) ${
           isMounted
@@ -95,25 +86,19 @@ export default function LoginClient() {
         }`}
         style={{ clipPath: cyberPolygon }}
       >
-        {/* Inner Flex Container holding both left and right sides */}
         <div
           className="w-full bg-[#0d0f1a] flex flex-col md:flex-row min-h-[550px]"
           style={{ clipPath: cyberPolygon }}
         >
-          {/* LEFT PANEL: Integrated Artwork & Motivation Content (Enhanced visibility tuning) */}
+          {/* LEFT PANEL */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center p-8 lg:p-12 overflow-hidden min-h-[320px] md:min-h-full">
-            {/* Background Layer Asset */}
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] ease-out scale-110 group-hover/container:scale-105"
               style={{ backgroundImage: `url(${stash.src})` }}
             />
-            {/* Balanced dark tech overlay opacity to let the image show properly */}
             <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#0d0f1a] via-[#0d0f1a]/75 to-[#0d0f1a]/20" />
-
-            {/* Moving Scanner Line Visual Effect */}
             <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent top-0 animate-[bounce_5s_infinite] pointer-events-none" />
 
-            {/* Overlaid Context - Delayed Slide-In */}
             <div
               className={`relative z-10 space-y-4 max-w-sm mr-auto transition-all duration-1000 delay-300 ease-out ${
                 isMounted
@@ -134,7 +119,7 @@ export default function LoginClient() {
               <p className="text-[11px] font-mono text-gray-200 backdrop-blur-[2px] bg-black/10 p-2 rounded border border-white/5 leading-relaxed tracking-wide">
                 Welcome back to STASH. Access your secure node to manage
                 decentralized player assets, sync custom configurations, and
-                orchestrate live drops instantly.
+                orcheate live drops instantly.
               </p>
               <div className="pt-2 border-t border-white/5 flex gap-4 text-[9px] font-mono text-gray-400 uppercase tracking-widest">
                 <div>
@@ -148,9 +133,8 @@ export default function LoginClient() {
             </div>
           </div>
 
-          {/* RIGHT PANEL: The Form Field System */}
+          {/* RIGHT PANEL */}
           <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12 bg-[#090b14]/50 border-t md:border-t-0 md:border-l border-white/[0.04]">
-            {/* Interactive Form Content - Cascading Delayed Fade-In */}
             <div
               className={`space-y-5 transition-all duration-[1000ms] delay-500 ease-out ${
                 isMounted
@@ -158,7 +142,6 @@ export default function LoginClient() {
                   : "opacity-0 translate-y-2"
               }`}
             >
-              {/* Header Title */}
               <div className="flex flex-col mb-1">
                 <h2 className="text-sm font-black font-mono tracking-[0.25em] uppercase text-white">
                   Access Portal
@@ -168,17 +151,16 @@ export default function LoginClient() {
                 </p>
               </div>
 
-              {/* Google Authentication */}
               <button
                 type="button"
+                disabled={isLoading}
                 onClick={handleGoogleLogin}
-                className="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#05060c] border border-white/10 hover:border-indigo-500/50 hover:bg-[#090b14] text-gray-300 hover:text-white font-mono text-xs font-bold tracking-widest h-11 transition-all duration-300 uppercase rounded-lg active:scale-[0.98]"
+                className="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#05060c] border border-white/10 hover:border-indigo-500/50 hover:bg-[#090b14] text-gray-300 hover:text-white font-mono text-xs font-bold tracking-widest h-11 transition-all duration-300 uppercase rounded-lg active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
               >
                 <FaGoogle className="text-indigo-400 text-sm" />
                 Sign in with Google
               </button>
 
-              {/* Divider */}
               <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-white/[0.06]" />
@@ -188,7 +170,6 @@ export default function LoginClient() {
                 </span>
               </div>
 
-              {/* Credential Setup */}
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5 group/input">
                   <label className="text-[10px] font-mono font-bold tracking-widest text-gray-400 group-focus-within/input:text-indigo-400 uppercase pl-1 transition-colors duration-300">
@@ -200,8 +181,9 @@ export default function LoginClient() {
                       type="email"
                       name="email"
                       required
+                      disabled={isLoading}
                       placeholder="Enter identity link..."
-                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide"
+                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide disabled:opacity-50"
                     />
                   </div>
                 </div>
@@ -224,13 +206,15 @@ export default function LoginClient() {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       required
+                      disabled={isLoading}
                       placeholder="••••••••••••"
-                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest"
+                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest disabled:opacity-50"
                     />
                     <button
                       type="button"
+                      disabled={isLoading}
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-500 hover:text-white transition-colors ml-2 cursor-pointer focus:outline-none shrink-0"
+                      className="text-gray-500 hover:text-white transition-colors ml-2 cursor-pointer focus:outline-none shrink-0 disabled:opacity-30"
                     >
                       {showPassword ? (
                         <FaEyeSlash className="text-xs" />
@@ -243,14 +227,34 @@ export default function LoginClient() {
 
                 <Button
                   type="submit"
-                  isLoading={isLoading}
-                  className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black font-mono text-xs tracking-[0.15em] h-11 mt-4 hover:brightness-110 active:scale-[0.99] transition-all duration-300 rounded-lg"
+                  isDisabled={isLoading} // 👈 Changed from disabled to isDisabled
+                  className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black font-mono text-xs tracking-[0.15em] h-11 mt-4 hover:brightness-110 active:scale-[0.99] transition-all duration-300 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
                 >
+                  {isLoading && (
+                    <svg
+                      className="animate-spin h-4 w-4 text-white shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  )}
                   {isLoading ? "INITIALIZING..." : "INITIALIZE SESSION"}
                 </Button>
               </form>
 
-              {/* Registration Anchor */}
               <div className="text-center pt-4 border-t border-white/5">
                 <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">
                   Not joined yet?{" "}
@@ -258,7 +262,7 @@ export default function LoginClient() {
                     href="/auth/register"
                     className="text-indigo-400 hover:text-white font-bold ml-1 transition-colors underline-offset-4 hover:underline"
                   >
-                    Join now
+                    Register Instance
                   </Link>
                 </p>
               </div>

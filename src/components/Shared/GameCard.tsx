@@ -1,3 +1,4 @@
+// src/components/Shared/GameCard.tsx
 "use client";
 
 import React, { useMemo } from "react";
@@ -15,7 +16,11 @@ export default function GameCard({ game }: GameCardProps) {
   const isFree = game?.price === 0;
   const releaseYear =
     game?.releaseDate?.split("-")[0] || game?.releaseDate || "TBA";
-  const targetId = game?._id;
+
+  // FIXED: Handled non-overlapping union structures safely using an initial generic reference
+  const targetId = typeof game?._id === "object" && game?._id && "$oid" in game._id
+    ? (game._id as { $oid: string }).$oid
+    : (game?._id as any) || "";
 
   // 1. RANDOM SIZE GENERATOR (10 GB to 100 GB)
   const randomSize = useMemo(() => {
@@ -96,7 +101,7 @@ export default function GameCard({ game }: GameCardProps) {
 
       {/* 3. FOOTER: DETAILS BUTTON (LEFT) | DOWNLOAD BUTTON (RIGHT) */}
       <div className="mt-auto grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.04] z-30 relative">
-        {/* View Details Outlined Trigger - FIXED: Slices Top Right Corner Now */}
+        {/* View Details Outlined Trigger */}
         <Link
           href={`/games/${targetId}`}
           className="flex items-center justify-center gap-1 bg-[#121420]/60 hover:bg-[#121420] border border-white/5 text-gray-300 hover:text-white text-[10px] font-bold tracking-widest uppercase py-2 rounded transition-all duration-200 no-underline [clip-path:polygon(0_0,calc(100%-6px)_0,100%_6px,100%_100%,0_100%)]"

@@ -1,32 +1,32 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { 
-  Form, 
-  TextField, 
-  Label, 
-  Input, 
-  TextArea, 
-  Description, 
-  Button, 
-  Select, 
+import {
+  Form,
+  TextField,
+  Label,
+  Input,
+  TextArea,
+  Description,
+  Button,
+  Select,
   ListBox,
   DatePicker,
   DateField,
-  Calendar
+  Calendar,
 } from "@heroui/react";
-import { 
-  FiPlus, 
-  FiLayers, 
-  FiImage, 
-  FiInfo, 
-  FiDollarSign, 
-  FiFolder, 
-  FiFileText, 
+import {
+  FiPlus,
+  FiLayers,
+  FiImage,
+  FiInfo,
+  FiDollarSign,
+  FiFolder,
+  FiFileText,
   FiLoader,
   FiUploadCloud,
   FiCheckCircle,
-  FiCalendar
+  FiCalendar,
 } from "react-icons/fi";
 import { DateValue } from "@internationalized/date";
 import { uploadToImgBB } from "@/lib/upload";
@@ -40,12 +40,12 @@ interface AddGameFormProps {
 
 export default function AddGameForm({ userId }: AddGameFormProps) {
   const [isUploading, setIsUploading] = useState(false);
-  
+
   // File state managers
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [gameBinaryFile, setGameBinaryFile] = useState<File | null>(null);
-  
+
   // HeroUI v3 Date Picker State
   const [releaseDate, setReleaseDate] = useState<DateValue | null>(null);
 
@@ -74,7 +74,7 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
 
   const handleAddGameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!thumbnailFile) {
       toast.error("Please upload a primary thumbnail image.");
       return;
@@ -105,13 +105,23 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
 
       // 2. Format inputs cleanly into Mongoose-schema matching properties
       const titleValue = formData.get("title") as string;
-      const genresArray = (formData.get("genre") as string).split(",").map(i => i.trim()).filter(Boolean);
-      const platformsArray = (formData.get("platform") as string).split(",").map(i => i.trim()).filter(Boolean);
-      const calculatedSize = (gameBinaryFile.size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+      const genresArray = (formData.get("genre") as string)
+        .split(",")
+        .map((i) => i.trim())
+        .filter(Boolean);
+      const platformsArray = (formData.get("platform") as string)
+        .split(",")
+        .map((i) => i.trim())
+        .filter(Boolean);
+      const calculatedSize =
+        (gameBinaryFile.size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
 
       const formPayloadObject = {
         title: titleValue,
-        slug: titleValue.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, ""),
+        slug: titleValue
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)+/g, ""),
         thumbnail: thumbnailUrl,
         images: galleryUrls,
         description: formData.get("description") as string,
@@ -121,7 +131,7 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
         platform: platformsArray,
         status: (formData.get("status") as string) || "Live",
         price: Number(formData.get("price") || 0),
-        size: calculatedSize
+        size: calculatedSize,
       };
 
       // 3. Construct clean FormData payload matching the Express controller
@@ -138,19 +148,23 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
 
       backendPayload.append("rating", String(formPayloadObject.rating));
       backendPayload.append("price", String(formPayloadObject.price));
-      
-      formPayloadObject.genre.forEach(g => backendPayload.append("genre", g));
-      formPayloadObject.platform.forEach(p => backendPayload.append("platform", p));
-      formPayloadObject.images.forEach(img => backendPayload.append("images", img));
 
-      const result : any = await addGame(backendPayload);
-      if(result.success==="false"){
+      formPayloadObject.genre.forEach((g) => backendPayload.append("genre", g));
+      formPayloadObject.platform.forEach((p) =>
+        backendPayload.append("platform", p),
+      );
+      formPayloadObject.images.forEach((img) =>
+        backendPayload.append("images", img),
+      );
+
+      const result: any = await addGame(backendPayload);
+      if (result.success === "false") {
         toast.error("Game deployment failed!");
       }
-      if(result.title){
+      if (result.title) {
         toast.success("Game deployment successful!");
       }
-      
+
       // Reset State Controls
       formElement.reset();
       setThumbnailFile(null);
@@ -159,7 +173,7 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
       setReleaseDate(null);
     } catch (error: any) {
       console.error("Asset pipeline failure:", error);
-      
+
       // 5. Fire clean, transient error toast
       toast.error(`Ingestion Pipeline Failure: ${error.message || error}`);
     } finally {
@@ -171,26 +185,31 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
     <>
       {/* Toast Notification Mount Target */}
 
-      <Form onSubmit={handleAddGameSubmit} className="space-y-6 w-full text-gray-200">
-        
+      <Form
+        onSubmit={handleAddGameSubmit}
+        className="space-y-6 w-full text-gray-200"
+      >
         {/* ROW 1: GAME TITLES & THUMBNAILS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           <TextField name="title" isRequired fullWidth>
             <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1">
               <FiLayers className="text-blue-400" /> Game Title
             </Label>
-            <Input 
-              placeholder="e.g. Valorant" 
+            <Input
+              placeholder="e.g. Valorant"
               aria-label="Game Title Input"
               className="rounded bg-[#0d0f1a] border border-white/5 text-xs h-10 px-3"
             />
           </TextField>
 
           <div className="flex flex-col gap-1.5">
-            <span id="thumbnail-label" className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1">
+            <span
+              id="thumbnail-label"
+              className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1"
+            >
               <FiImage className="text-purple-400" /> Thumbnail Asset
             </span>
-            <div 
+            <div
               onClick={() => thumbnailRef.current?.click()}
               role="button"
               aria-labelledby="thumbnail-label"
@@ -199,12 +218,16 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
               <span className="text-xs text-gray-400 truncate max-w-[80%]">
                 {thumbnailFile ? thumbnailFile.name : "Select Game Image..."}
               </span>
-              {thumbnailFile ? <FiCheckCircle className="text-green-500" /> : <FiUploadCloud className="text-gray-500" />}
+              {thumbnailFile ? (
+                <FiCheckCircle className="text-green-500" />
+              ) : (
+                <FiUploadCloud className="text-gray-500" />
+              )}
             </div>
-            <input 
+            <input
               ref={thumbnailRef}
-              type="file" 
-              accept="image/*" 
+              type="file"
+              accept="image/*"
               aria-label="Upload Thumbnail Image"
               onChange={handleThumbnailChange}
               className="hidden"
@@ -215,58 +238,76 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
         {/* ROW 2: GENRE & PLATFORMS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
           <TextField name="genre" isRequired fullWidth>
-            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">Genre Matrix</Label>
-            <Input 
-              placeholder="FPS, Tactical, Action" 
+            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">
+              Genre Matrix
+            </Label>
+            <Input
+              placeholder="FPS, Tactical, Action"
               aria-label="Game Genres"
               className="rounded bg-[#0d0f1a] border border-white/5 text-xs h-10 px-3"
             />
-            <Description className="text-[10px] text-gray-600">Separate items with commas</Description>
+            <Description className="text-[10px] text-gray-600">
+              Separate items with commas
+            </Description>
           </TextField>
 
           <TextField name="platform" isRequired fullWidth>
-            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">Supported Platforms</Label>
-            <Input 
-              placeholder="PC, PS5, Xbox" 
+            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">
+              Supported Platforms
+            </Label>
+            <Input
+              placeholder="PC, PS5, Xbox"
               aria-label="Supported Platforms"
               className="rounded bg-[#0d0f1a] border border-white/5 text-xs h-10 px-3"
             />
-            <Description className="text-[10px] text-gray-600">Separate items with commas</Description>
+            <Description className="text-[10px] text-gray-600">
+              Separate items with commas
+            </Description>
           </TextField>
         </div>
 
         {/* ROW 3: METRICS, DATE PICKER & STATUS */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
           <TextField name="rating" isRequired>
-            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">Rating</Label>
-            <Input 
-              type="number" 
-              step="0.1" 
-              max="5" 
-              min="0" 
-              placeholder="4.5" 
+            <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase">
+              Rating
+            </Label>
+            <Input
+              type="number"
+              step="0.1"
+              max="5"
+              min="0"
+              placeholder="4.5"
               aria-label="Game Rating"
               className="rounded bg-[#0d0f1a] border border-white/5 text-xs h-10 px-3"
             />
           </TextField>
 
           {/* DatePicker Component */}
-          <DatePicker 
-            value={releaseDate} 
+          <DatePicker
+            value={releaseDate}
             onChange={setReleaseDate}
             className="flex flex-col gap-1.5"
             aria-label="Game Release Date Picker"
           >
-            <Label id="release-date-label" className="text-xs font-bold text-gray-400 tracking-wider uppercase">Release Date</Label>
-            <DateField.Group 
+            <Label
+              id="release-date-label"
+              className="text-xs font-bold text-gray-400 tracking-wider uppercase"
+            >
+              Release Date
+            </Label>
+            <DateField.Group
               aria-labelledby="release-date-label"
               className="h-10 bg-[#0d0f1a] border border-white/5 rounded px-3 flex items-center justify-between"
             >
-              <DateField.Input className="text-xs text-gray-200" aria-label="Release Date Input Segments">
+              <DateField.Input
+                className="text-xs text-gray-200"
+                aria-label="Release Date Input Segments"
+              >
                 {(segment) => <DateField.Segment segment={segment} />}
               </DateField.Input>
               <DateField.Suffix>
-                <DatePicker.Trigger 
+                <DatePicker.Trigger
                   className="text-gray-400 hover:text-gray-200"
                   aria-label="Open Calendar Dialog"
                 >
@@ -276,32 +317,36 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
                 </DatePicker.Trigger>
               </DateField.Suffix>
             </DateField.Group>
-            
+
             <DatePicker.Popover className="bg-[#0c0d16] border border-white/10 rounded-lg p-2 shadow-2xl">
               <Calendar aria-label="Game Release Date Selection Calendar">
                 <Calendar.Header className="flex justify-between items-center pb-2 border-b border-white/5 mb-2">
                   <Calendar.Heading className="text-xs font-black text-gray-300 uppercase tracking-widest" />
                   <div className="flex gap-1">
-                    <Calendar.NavButton 
-                      slot="previous" 
+                    <Calendar.NavButton
+                      slot="previous"
                       aria-label="Previous Month"
-                      className="p-1 text-xs text-gray-400 hover:text-white" 
+                      className="p-1 text-xs text-gray-400 hover:text-white"
                     />
-                    <Calendar.NavButton 
-                      slot="next" 
+                    <Calendar.NavButton
+                      slot="next"
                       aria-label="Next Month"
-                      className="p-1 text-xs text-gray-400 hover:text-white" 
+                      className="p-1 text-xs text-gray-400 hover:text-white"
                     />
                   </div>
                 </Calendar.Header>
                 <Calendar.Grid className="w-full text-xs text-gray-300">
                   <Calendar.GridHeader>
-                    {(day) => <Calendar.HeaderCell className="text-gray-500 font-bold p-1">{day}</Calendar.HeaderCell>}
+                    {(day) => (
+                      <Calendar.HeaderCell className="text-gray-500 font-bold p-1">
+                        {day}
+                      </Calendar.HeaderCell>
+                    )}
                   </Calendar.GridHeader>
                   <Calendar.GridBody>
                     {(date) => (
-                      <Calendar.Cell 
-                        date={date} 
+                      <Calendar.Cell
+                        date={date}
                         className="p-1 hover:bg-blue-600/20 rounded cursor-pointer text-center focus:bg-blue-600 focus:text-white"
                       />
                     )}
@@ -313,9 +358,19 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
 
           {/* Select Status Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <Label id="status-label" className="text-xs font-bold text-gray-400 tracking-wider uppercase">Status</Label>
-            <Select name="status" placeholder="Select" aria-labelledby="status-label" className="w-full">
-              <Select.Trigger 
+            <Label
+              id="status-label"
+              className="text-xs font-bold text-gray-400 tracking-wider uppercase"
+            >
+              Status
+            </Label>
+            <Select
+              name="status"
+              placeholder="Select"
+              aria-labelledby="status-label"
+              className="w-full"
+            >
+              <Select.Trigger
                 aria-label="Select Game Status"
                 className="h-10 bg-[#0d0f1a] border border-white/5 text-xs text-gray-300 rounded px-3 flex justify-between items-center"
               >
@@ -324,13 +379,25 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
               </Select.Trigger>
               <Select.Popover className="bg-[#0d0f1a] border border-white/5 rounded mt-1">
                 <ListBox className="p-1" aria-label="Status Choices">
-                  <ListBox.Item id="Live" textValue="Live" className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer">
+                  <ListBox.Item
+                    id="Live"
+                    textValue="Live"
+                    className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer"
+                  >
                     <Label>Live</Label>
                   </ListBox.Item>
-                  <ListBox.Item id="Beta" textValue="Beta Stage" className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer">
+                  <ListBox.Item
+                    id="Beta"
+                    textValue="Beta Stage"
+                    className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer"
+                  >
                     <Label>Beta Stage</Label>
                   </ListBox.Item>
-                  <ListBox.Item id="Maintenance" textValue="Maintenance" className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer">
+                  <ListBox.Item
+                    id="Maintenance"
+                    textValue="Maintenance"
+                    className="text-xs text-gray-300 hover:bg-white/5 p-2 rounded cursor-pointer"
+                  >
                     <Label>Maintenance</Label>
                   </ListBox.Item>
                 </ListBox>
@@ -342,9 +409,9 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
             <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1">
               <FiDollarSign className="text-green-400" /> Price
             </Label>
-            <Input 
-              type="number" 
-              placeholder="0 (Free)" 
+            <Input
+              type="number"
+              placeholder="0 (Free)"
               aria-label="Game Price"
               className="rounded bg-[#0d0f1a] border border-white/5 text-xs h-10 px-3"
             />
@@ -353,10 +420,13 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
 
         {/* ROW 4: CORE GAME BINARY FILE DELIVERY NODE */}
         <div className="w-full bg-[#0d0f1a]/40 p-4 border border-white/5 rounded space-y-3">
-          <span id="binary-label" className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1">
+          <span
+            id="binary-label"
+            className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1"
+          >
             <FiFolder className="text-cyan-400" /> Game File
           </span>
-          <div 
+          <div
             onClick={() => binaryRef.current?.click()}
             role="button"
             aria-labelledby="binary-label"
@@ -368,22 +438,26 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
                   <FiFileText /> {gameBinaryFile.name}
                 </span>
                 <span className="text-[10px] text-gray-500">
-                  {(gameBinaryFile.size / (1024 * 1024)).toFixed(2)} MB • Ready for validation
+                  {(gameBinaryFile.size / (1024 * 1024)).toFixed(2)} MB • Ready
+                  for validation
                 </span>
               </>
             ) : (
               <>
                 <span className="text-xs text-gray-400 flex items-center gap-1.5 font-bold">
-                  <FiUploadCloud className="text-cyan-400 animate-pulse" /> Upload Distribution Installer
+                  <FiUploadCloud className="text-cyan-400 animate-pulse" />{" "}
+                  Upload Distribution Installer
                 </span>
-                <span className="text-[10px] text-gray-600">Supports .exe, .zip, .rar, .dmg archives</span>
+                <span className="text-[10px] text-gray-600">
+                  Supports .exe, .zip, .rar, .dmg archives
+                </span>
               </>
             )}
           </div>
-          <input 
+          <input
             ref={binaryRef}
-            type="file" 
-            accept=".exe,.zip,.rar,.tar,.dmg" 
+            type="file"
+            accept=".exe,.zip,.rar,.tar,.dmg"
             aria-label="Upload Game Binary File"
             onChange={handleBinaryChange}
             className="hidden"
@@ -393,7 +467,10 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
         {/* ROW 5: MULTIPLE GALLERY IMAGES CONTAINER */}
         <div className="p-4 border border-white/5 bg-[#0d0f1a]/20 rounded space-y-3">
           <div className="flex items-center justify-between border-b border-white/5 pb-2">
-            <Label id="gallery-label" className="text-[10px] font-black text-gray-400 tracking-wider uppercase flex items-center gap-1.5">
+            <Label
+              id="gallery-label"
+              className="text-[10px] font-black text-gray-400 tracking-wider uppercase flex items-center gap-1.5"
+            >
               <FiImage className="text-blue-400" /> Gallery Images
             </Label>
             <button
@@ -409,25 +486,34 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
           {galleryFiles.length > 0 ? (
             <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
               {galleryFiles.map((file, idx) => (
-                <div key={idx} className="flex items-center justify-between text-xs bg-[#05060c] p-2 rounded border border-white/5">
+                <div
+                  key={idx}
+                  className="flex items-center justify-between text-xs bg-[#05060c] p-2 rounded border border-white/5"
+                >
                   <span className="text-gray-400 truncate max-w-[80%] flex items-center gap-2">
-                    <span className="text-[10px] text-blue-500 font-bold">#{idx + 1}</span> {file.name}
+                    <span className="text-[10px] text-blue-500 font-bold">
+                      #{idx + 1}
+                    </span>{" "}
+                    {file.name}
                   </span>
-                  <span className="text-[10px] text-gray-600">{(file.size / 1024).toFixed(0)} KB</span>
+                  <span className="text-[10px] text-gray-600">
+                    {(file.size / 1024).toFixed(0)} KB
+                  </span>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-6 border border-dashed border-white/5 rounded text-xs text-gray-600">
-              No gallery files selected yet. Click "Select Images" to load multiple assets.
+              No gallery files selected yet. Click "Select Images" to load
+              multiple assets.
             </div>
           )}
 
-          <input 
+          <input
             ref={galleryRef}
-            type="file" 
+            type="file"
             multiple
-            accept="image/*" 
+            accept="image/*"
             aria-label="Upload multiple gallery files"
             onChange={handleGalleryChange}
             className="hidden"
@@ -439,33 +525,39 @@ export default function AddGameForm({ userId }: AddGameFormProps) {
           <Label className="text-xs font-bold text-gray-400 tracking-wider uppercase flex items-center gap-1">
             <FiInfo className="text-purple-400" /> Game Description
           </Label>
-          <TextArea 
-            rows={4} 
-            name="description" 
+          <TextArea
+            rows={4}
+            name="description"
             aria-label="Enter game description"
-            placeholder="Provide explicit game overview notes here..." 
+            placeholder="Provide explicit game overview notes here..."
             className="rounded bg-[#0d0f1a] border border-white/5 text-xs p-3"
           />
         </TextField>
 
         {/* SUBMIT BUTTON WITH LOADING STATE */}
+        {/* SUBMIT BUTTON WITH LOADING STATE */}
         <Button
           type="submit"
-          disabled={isUploading}
-          aria-label={isUploading ? "Transferring Binary Assets" : "Deploy Game Node Protocol"}
+          isDisabled={isUploading} // 👈 Changed from disabled to isDisabled
+          aria-label={
+            isUploading
+              ? "Transferring Binary Assets"
+              : "Deploy Game Node Protocol"
+          }
           className="w-full h-11 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 font-black text-xs text-white uppercase tracking-widest shadow-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed rounded"
         >
           {isUploading ? (
             <>
-              <FiLoader className="w-4 h-4 animate-spin" aria-hidden="true" /> Stream Deploying Assets...
+              <FiLoader className="w-4 h-4 animate-spin" aria-hidden="true" />{" "}
+              Stream Deploying Assets...
             </>
           ) : (
             <>
-              <FiPlus className="w-4 h-4" aria-hidden="true" /> Deploy Game Node Protocol
+              <FiPlus className="w-4 h-4" aria-hidden="true" /> Deploy Game Node
+              Protocol
             </>
           )}
         </Button>
-
       </Form>
     </>
   );

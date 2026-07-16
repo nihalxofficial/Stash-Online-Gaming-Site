@@ -84,8 +84,10 @@ export default function HeroBanner({
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const resolvedBgSrc = backgroundImageUrl && typeof backgroundImageUrl === "object"
-    ? backgroundImageUrl.src
+  // FIXED: Cast static import objects through 'any' to cleanly pull out the .src value 
+  const rawBgSrc = backgroundImageUrl as any;
+  const resolvedBgSrc = rawBgSrc && typeof rawBgSrc === "object"
+    ? rawBgSrc.src
     : backgroundImageUrl;
 
   return (

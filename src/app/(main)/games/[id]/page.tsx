@@ -66,15 +66,17 @@ export default async function GameDetailsPage({ params }: PageProps) {
   const ownerName: string = game?.owner?.name || "System Core Operator";
   const ownerEmail: string = game?.owner?.email || "internal@system.node";
   
-  // EXACT ID LOOKUP COPIED FROM GAMECARD.tsx
-  const targetId = game?._id || id;
+  // FIXED ID LOOKUP: Always resolves down to a strict, clean string
+  const targetId: string = typeof game?._id === "object" && game?._id && "$oid" in game._id
+    ? (game._id as any).$oid
+    : String(game?._id || id);
 
   const mediaGallery: string[] = [
     ...(game?.thumbnail ? [game.thumbnail] : []),
     ...(game?.images || []),
   ];
 
-  // DETERMINISTIC SEED MATRIX BASED ON TARGET ID STRING (SAME AS RANDOM CARD MOCK LOGIC)
+  // DETERMINISTIC SEED MATRIX BASED ON TARGET ID STRING
   const displaySize = (() => {
     const idString = typeof targetId === "string" 
       ? targetId 
@@ -149,7 +151,7 @@ export default async function GameDetailsPage({ params }: PageProps) {
                   gameId={targetId}
                   price={game?.price ?? 0}
                   gameTitle={game?.title || "Asset"}
-                  variant="detail"
+                  variant="details"
                 />
               </div>
             </div>

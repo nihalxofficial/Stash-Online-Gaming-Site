@@ -75,9 +75,9 @@ export default function DownloadButtonContainer({
 
       {/* 2. OVERLAY BACKDROP FRAME */}
       <Modal.Backdrop className="fixed inset-0 bg-black/60 ">
-        {/* FIXED: items-start pushes down, flex justify-center ensures it stays exactly centered horizontally */}
+        {/* items-start pushes down, flex justify-center ensures it stays exactly centered horizontally */}
         <Modal.Container className="w-full h-full overflow-y-auto flex justify-center items-start pt-24 pb-12 px-4">
-          {/* FIXED: mx-auto locks it to horizontal grid center, mt-6 ensures a clean top offset from navbars */}
+          {/* mx-auto locks it to horizontal grid center, mt-6 ensures a clean top offset from navbars */}
           <Modal.Dialog className="w-full sm:max-w-[440px] mx-auto mt-6 bg-[#0d0f1a] border border-white/10 text-gray-200 font-mono rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden focus:outline-none">
             <Modal.CloseTrigger
               onClick={resetModalFlow}
@@ -121,12 +121,23 @@ export default function DownloadButtonContainer({
                 </Modal.Body>
 
                 <Modal.Footer className="p-0 pt-2">
+                  {/* FIXED: Swapped disabled for isDisabled to match HeroUI specification */}
                   <Button
-                    isLoading={isProcessing}
+                    isDisabled={isProcessing}
                     onClick={simulatePaymentProcess}
-                    className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest rounded-xl py-6 shadow-lg shadow-indigo-600/20 active:scale-[0.99]"
+                    className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest rounded-xl py-6 shadow-lg shadow-indigo-600/20 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Confirm Payment
+                    {isProcessing ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      "Confirm Payment"
+                    )}
                   </Button>
                 </Modal.Footer>
               </div>

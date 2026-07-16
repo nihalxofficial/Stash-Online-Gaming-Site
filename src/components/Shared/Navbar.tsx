@@ -1,3 +1,4 @@
+// src/components/Shared/Navbar.tsx
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -8,7 +9,15 @@ import { NavLinkItem } from "@/types";
 import { authClient } from "@/lib/auth-client";
 
 // Import icons from React Icons
-import { FiChevronDown, FiUser, FiSettings, FiLogOut, FiSearch, FiMenu, FiX } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiSearch,
+  FiMenu,
+  FiX,
+} from "react-icons/fi";
 import { IoGridOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 
@@ -30,6 +39,9 @@ export default function RepositoryNavbar() {
 
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
+
+  // FIXED: Inline intersection casting to extend the user object interface signature with an optional role field safely
+  const userRole = (user as typeof user & { role?: string })?.role || "user";
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -70,10 +82,8 @@ export default function RepositoryNavbar() {
 
         {/* Outer Spacing Wrapper */}
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 relative z-20">
-          
           {/* Main Structural row (overflow hidden removed to protect dropdown layout) */}
           <div className="flex items-center justify-between h-16 md:h-20 bg-[#0d0f1a]/80 backdrop-blur-md rounded-xl border border-white/5 shadow-2xl relative z-30">
-            
             {/* LOGO BLOCK */}
             <div className="h-full flex items-center pl-6 pr-14 md:pl-8 md:pr-20 bg-[#121420] border-r border-gray-800/60 shadow-xl shrink-0 group relative cursor-pointer rounded-l-xl [clip-path:polygon(0_0,100%_0,82%_100%,0%_100%)]">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-indigo-600/0 to-purple-600/0 group-hover:from-blue-600/10 group-hover:via-indigo-600/10 group-hover:to-purple-600/10 transition-all duration-500 pointer-events-none" />
@@ -93,9 +103,8 @@ export default function RepositoryNavbar() {
 
             {/* DESKTOP CONTENT & RIGHT MENU BLOCK */}
             <div className="flex-1 h-full bg-[#090b14]/90 flex items-center justify-between px-6 md:px-12 border-l border-gray-800/40 relative z-40 rounded-r-xl">
-              
               {/* Desktop Link Routing Navigation */}
-              <nav 
+              <nav
                 className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-xs font-bold font-mono tracking-widest"
                 onMouseLeave={() => setHoveredLink(null)}
               >
@@ -107,7 +116,9 @@ export default function RepositoryNavbar() {
                       href={link.href}
                       onMouseEnter={() => setHoveredLink(link.href)}
                       className={`text-xs font-bold font-mono tracking-widest uppercase relative py-2 transition-colors duration-300 no-underline ${
-                        isActive ? "text-indigo-400 font-black" : "text-gray-300 hover:text-white"
+                        isActive
+                          ? "text-indigo-400 font-black"
+                          : "text-gray-300 hover:text-white"
                       }`}
                     >
                       <span className="relative z-10">{link.label}</span>
@@ -117,7 +128,11 @@ export default function RepositoryNavbar() {
                         <motion.span
                           layoutId="navHoverUnderline"
                           className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 30,
+                          }}
                         />
                       )}
 
@@ -175,7 +190,9 @@ export default function RepositoryNavbar() {
 
                       <FiChevronDown
                         className={`w-3 h-3 text-gray-500 transition-transform duration-300 ${
-                          isDropdownOpen ? "rotate-180 text-indigo-400" : "group-hover/user:text-indigo-400"
+                          isDropdownOpen
+                            ? "rotate-180 text-indigo-400"
+                            : "group-hover/user:text-indigo-400"
                         }`}
                         style={{ strokeWidth: 3 }}
                       />
@@ -208,12 +225,15 @@ export default function RepositoryNavbar() {
                             className="flex items-center gap-3.5 px-5 py-2.5 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/[0.03] transition-colors no-underline uppercase tracking-wider"
                             onClick={() => setIsDropdownOpen(false)}
                           >
-                            <FiUser className="w-4 h-4 text-gray-500" style={{ strokeWidth: 2.2 }} />
+                            <FiUser
+                              className="w-4 h-4 text-gray-500"
+                              style={{ strokeWidth: 2.2 }}
+                            />
                             <span>Profile</span>
                           </Link>
 
                           <Link
-                            href={`/dashboard/${user?.role || "user"}`}
+                            href={`/dashboard/${userRole}`}
                             className="flex items-center gap-3.5 px-5 py-2.5 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/[0.03] transition-colors no-underline uppercase tracking-wider"
                             onClick={() => setIsDropdownOpen(false)}
                           >
@@ -222,11 +242,14 @@ export default function RepositoryNavbar() {
                           </Link>
 
                           <Link
-                            href={`/dashboard/${user?.role || "user"}/settings`}
+                            href={`/dashboard/${userRole}/settings`}
                             className="flex items-center gap-3.5 px-5 py-2.5 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/[0.03] transition-colors no-underline uppercase tracking-wider"
                             onClick={() => setIsDropdownOpen(false)}
                           >
-                            <FiSettings className="w-4 h-4 text-gray-500" style={{ strokeWidth: 2.2 }} />
+                            <FiSettings
+                              className="w-4 h-4 text-gray-500"
+                              style={{ strokeWidth: 2.2 }}
+                            />
                             <span>Settings</span>
                           </Link>
 
@@ -236,7 +259,10 @@ export default function RepositoryNavbar() {
                               onClick={handleSignOut}
                               className="flex items-center gap-3.5 px-5 py-2.5 w-full text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 transition-colors cursor-pointer focus:outline-none uppercase tracking-wider text-left"
                             >
-                              <FiLogOut className="w-4 h-4" style={{ strokeWidth: 2.2 }} />
+                              <FiLogOut
+                                className="w-4 h-4"
+                                style={{ strokeWidth: 2.2 }}
+                              />
                               <span>Disconnect</span>
                             </button>
                           </div>
@@ -274,7 +300,11 @@ export default function RepositoryNavbar() {
                   className="lg:hidden text-gray-400 hover:text-indigo-400 transition-colors cursor-pointer z-50 relative"
                   aria-label="Toggle Navigation Drawer"
                 >
-                  {isMobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+                  {isMobileMenuOpen ? (
+                    <FiX className="w-6 h-6" />
+                  ) : (
+                    <FiMenu className="w-6 h-6" />
+                  )}
                 </button>
               </div>
             </div>
@@ -312,7 +342,9 @@ export default function RepositoryNavbar() {
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`text-lg font-bold font-mono tracking-widest uppercase transition-colors duration-200 no-underline ${
-                      isActive ? "text-indigo-400 font-black" : "text-gray-300 hover:text-white"
+                      isActive
+                        ? "text-indigo-400 font-black"
+                        : "text-gray-300 hover:text-white"
                     }`}
                   >
                     {link.label}
@@ -343,14 +375,14 @@ export default function RepositoryNavbar() {
                         Profile
                       </Link>
                       <Link
-                        href={`/dashboard/${user.role}`}
+                        href={`/dashboard/${userRole}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="py-2.5 text-xs bg-[#0d0f1a] border border-white/5 text-gray-300 rounded uppercase tracking-wider no-underline"
                       >
                         Dashboard
                       </Link>
                       <Link
-                        href={`/dashboard/${user.role}/settings`}
+                        href={`/dashboard/${userRole}/settings`}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="py-2.5 text-xs bg-[#0d0f1a] border border-white/5 text-gray-300 rounded uppercase tracking-wider no-underline"
                       >

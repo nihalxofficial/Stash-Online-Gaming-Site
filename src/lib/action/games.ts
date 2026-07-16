@@ -1,5 +1,7 @@
-import { serverMutation } from "../core/server"
+import { serverMutation } from "../core/server";
 
-export const addGame = async(data : unknown)=>{
-    return serverMutation(`/games`, data);
-}
+// FIXED: Added explicit ': Promise<any>' signature to prevent TypeScript 
+// from inferring an empty object '{}' return type from serverMutation
+export const addGame = async (data: unknown): Promise<any> => {
+  return serverMutation(`/games`, data);
+};

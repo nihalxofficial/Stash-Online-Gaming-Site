@@ -25,7 +25,7 @@ export default async function AddGamePage() {
       </div>
 
       {/* CORE INTERACTIVE MATRIX CONTROLLER */}
-      <AddGameForm userId={user.id} />
+      <AddGameForm userId={user?.id ?? ""} />
 
     </div>
   );

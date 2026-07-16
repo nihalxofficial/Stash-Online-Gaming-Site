@@ -76,7 +76,7 @@ export default function RegisterClient() {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       const { data, error } = await authClient.signUp.email({
         name,
         email,
@@ -85,16 +85,17 @@ export default function RegisterClient() {
       });
 
       if (error) {
-        toast.error(error.message || "Identity provision rejected by auth node.");
+        toast.error(
+          error.message || "Identity provision rejected by auth node.",
+        );
         return;
       }
 
       if (data) {
         toast.success("Identity Provisioned Successfully!");
-        router.push(`/`)
+        router.push(`/`);
       }
     } catch (err: unknown) {
-      // Complete Type Safety Guard for Runtime Exceptions
       if (err instanceof Error) {
         toast.error(err.message);
       } else {
@@ -131,13 +132,12 @@ export default function RegisterClient() {
           className="w-full bg-[#0d0f1a] flex flex-col md:flex-row min-h-[550px]"
           style={{ clipPath: cyberPolygon }}
         >
-          {/* LEFT PANEL - Fine-tuned overlays for enhanced asset visibility */}
+          {/* LEFT PANEL */}
           <div className="w-full md:w-1/2 relative flex items-center justify-center p-8 lg:p-12 overflow-hidden min-h-[250px] md:min-h-full">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] ease-out scale-110 group-hover/container:scale-105"
               style={{ backgroundImage: `url(${stash.src})` }}
             />
-            {/* Tuned down opacity layers to let the background asset shine through */}
             <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#0d0f1a] via-[#0d0f1a]/75 to-[#0d0f1a]/20" />
             <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent top-0 animate-[bounce_5s_infinite] pointer-events-none" />
 
@@ -197,8 +197,9 @@ export default function RegisterClient() {
 
               <button
                 type="button"
+                disabled={isLoading}
                 onClick={handleGoogleRegister}
-                className="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#05060c] border border-white/10 hover:border-indigo-500/50 hover:bg-[#090b14] text-gray-300 hover:text-white font-mono text-xs font-bold tracking-widest h-9 transition-all duration-300 uppercase rounded-lg active:scale-[0.98]"
+                className="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#05060c] border border-white/10 hover:border-indigo-500/50 hover:bg-[#090b14] text-gray-300 hover:text-white font-mono text-xs font-bold tracking-widest h-9 transition-all duration-300 uppercase rounded-lg active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
               >
                 <FaGoogle className="text-indigo-400 text-xs" />
                 Sign up with Google
@@ -225,8 +226,9 @@ export default function RegisterClient() {
                         type="text"
                         name="name"
                         required
+                        disabled={isLoading}
                         placeholder="Operator..."
-                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide"
+                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide disabled:opacity-50"
                       />
                     </div>
                   </div>
@@ -241,8 +243,9 @@ export default function RegisterClient() {
                         type="email"
                         name="email"
                         required
-                        placeholder="Enter link..."
-                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide"
+                        disabled={isLoading}
+                        placeholder="Operator key..."
+                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide disabled:opacity-50"
                       />
                     </div>
                   </div>
@@ -258,8 +261,9 @@ export default function RegisterClient() {
                       type="url"
                       name="profileUrl"
                       required
+                      disabled={isLoading}
                       placeholder="https://assets.stash.gg/avatar.png"
-                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide"
+                      className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-wide disabled:opacity-50"
                     />
                   </div>
                 </div>
@@ -275,13 +279,15 @@ export default function RegisterClient() {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         required
+                        disabled={isLoading}
                         placeholder="••••••••"
-                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest"
+                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest disabled:opacity-50"
                       />
                       <button
                         type="button"
+                        disabled={isLoading}
                         onClick={() => setShowPassword(!showPassword)}
-                        className="text-gray-500 hover:text-white transition-colors ml-1 focus:outline-none shrink-0"
+                        className="text-gray-500 hover:text-white transition-colors ml-1 focus:outline-none shrink-0 disabled:opacity-30"
                       >
                         {showPassword ? (
                           <FaEyeSlash className="text-xs cursor-pointer" />
@@ -302,15 +308,17 @@ export default function RegisterClient() {
                         type={showConfirmPassword ? "text" : "password"}
                         name="confirmPassword"
                         required
+                        disabled={isLoading}
                         placeholder="••••••••"
-                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest"
+                        className="w-full bg-transparent text-xs font-mono focus:outline-none text-white placeholder-gray-600 tracking-widest disabled:opacity-50"
                       />
                       <button
                         type="button"
+                        disabled={isLoading}
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="text-gray-500 hover:text-white transition-colors ml-1 focus:outline-none shrink-0"
+                        className="text-gray-500 hover:text-white transition-colors ml-1 focus:outline-none shrink-0 disabled:opacity-30"
                       >
                         {showConfirmPassword ? (
                           <FaEyeSlash className="text-xs cursor-pointer" />
@@ -324,9 +332,30 @@ export default function RegisterClient() {
 
                 <Button
                   type="submit"
-                  isLoading={isLoading}
-                  className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black font-mono text-xs tracking-[0.15em] h-10 mt-2 hover:brightness-110 active:scale-[0.99] transition-all duration-300 rounded-lg"
+                  isDisabled={isLoading} // 👈 Changed from disabled to isDisabled
+                  className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black font-mono text-xs tracking-[0.15em] h-10 mt-2 hover:brightness-110 active:scale-[0.99] transition-all duration-300 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
                 >
+                  {isLoading && (
+                    <svg
+                      className="animate-spin h-3.5 w-3.5 text-white shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  )}
                   {isLoading ? "PROVISIONING..." : "INITIALIZE INSTANCE"}
                 </Button>
               </form>

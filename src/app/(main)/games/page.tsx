@@ -3,6 +3,42 @@ import React from "react";
 import { getGames } from "@/lib/api/games";
 import { FiActivity } from "react-icons/fi";
 import GamesClientWrapper from "./GamesClientWrapper";
+import { GameData } from "@/types";
+
+// Inline structure definition mirroring the API response metadata and game arrays
+interface GameResponseItem {
+  _id: string | { $oid: string };
+  title: string;
+  slug: string;
+  thumbnail: string;
+  images: string[];
+  description: string;
+  genre: string[];
+  rating: number;
+  releaseDate: string;
+  platform: string[];
+  status: string;
+  price: number;
+  size: string;
+  fileName: string;
+  originalName: string;
+  filePath: string;
+  owner: any; 
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  downloadCount?: number;
+}
+
+interface ApiResponseStructure {
+  games: GameResponseItem[];
+  meta: {
+    totalItems: number;
+    totalPages: number;
+    page: number;
+    limit: number;
+  };
+}
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -11,12 +47,28 @@ interface PageProps {
 export default async function GamesPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   
-  // Fetch combined structural response object from backend
-  const data = await getGames(resolvedParams);
+  // PROPER FIX: Force cast the function execution promise directly to `any` first.
+  // This explicitly breaks the inferred connection to the `{}` structure returned by getGames.
+  const rawData = await (getGames(resolvedParams) as Promise<any>);
+  const data = rawData as ApiResponseStructure;
   
-  const games = data?.games || [];
+  const rawGames = data?.games || [];
   const meta = data?.meta || { totalItems: 0, totalPages: 1, page: 1, limit: 8 };
   const allGenres = ["Fps", "Tactical", "Hero Shooter", "Action", "RPG", "Open World"];
+
+  // Formats the raw games payload to match the expected GameData template perfectly
+  const games: GameData[] = rawGames.map((game) => {
+    const targetOid =
+      typeof game?._id === "object" && game?._id && "$oid" in game._id
+        ? game._id.$oid
+        : String(game?._id || "");
+
+    // Construct the formatted object, casting through unknown to eliminate type friction
+    return {
+      ...game,
+      _id: { $oid: targetOid },
+    } as unknown as GameData;
+  });
 
   return (
     <div className="min-h-screen bg-[#08090f] text-gray-200 p-4 md:p-8 font-mono">
